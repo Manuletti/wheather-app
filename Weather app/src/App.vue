@@ -5,17 +5,29 @@ const baseUrl = ref('api.weatherapi.com/')
 const key = ref('8190f950589d4af1a48215330222607')
 
 const location = ref("");
-const data = ref({})
+let data = ref({})
 
-function getWeather(enter) {
-  if (enter.key == "Enter") {
-
+function getWeather(e) {
+  console.log(location.value)
+  if (e.key == 'Enter') {
+    fetch(`http://${baseUrl.value}v1/current.json?key=${key.value} &q=${location.value}$api=yes`, {
+      headers: {
+        "Access-Control-Allow-Origin": baseUrl.value,
+      },
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((dataToVar))
   }
 }
 
-async function fetchInfo() {
-  const adress = `http://${baseUrl}/v1/current.json?key=${key}&q=${location}$api=yes`
+function dataToVar(results) {
+  console.log(results)
+  data = results
 }
+
+
 </script>
 
 <template>
@@ -28,8 +40,7 @@ async function fetchInfo() {
       v-model="location"
       @keypress="getWeather"
     />
-    // eslint-disable-next-line prettier/prettier
-    {{ location }}
+    {{ data.location }}
     <div class="info">
       <h1 id="location">Moscow, Russia</h1>
       <h2 id="current time">0:58 -- July 28</h2>
